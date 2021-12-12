@@ -1,9 +1,28 @@
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var queryString = document.location.search;
+var repoNameEl = document.querySelector("#repo-name");
+
+var getRepoName = function () {
+  // grab repo name from URL query string
+  var queryString = document.location.search;
+  var repoName = queryString.split("=")[1];
+
+  if (repoName) {
+    // display repo name on the page
+    repoNameEl.textContent = repoName;
+
+    getRepoIssues(repoName);
+  } else {
+    //if no repo was givin, redirect to homepage
+    document.location.replace("./index.html");
+  }
+};
 
 var getRepoIssues = function (repo) {
   var apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
 
+  // make a get request to the url
   fetch(apiUrl).then(function (response) {
     // request was successful
     if (response.ok) {
@@ -16,10 +35,10 @@ var getRepoIssues = function (repo) {
         }
       });
     } else {
-      alert("There was a problem with your request!");
+      // if not successful, re direct to homepage
+      document.location.replace("./index.html");
     }
   });
-  console.log(repo);
 };
 
 var displayWarning = function (repo) {
@@ -69,4 +88,4 @@ var displayIssues = function (issues) {
   }
 };
 
-getRepoIssues();
+getRepoName();
